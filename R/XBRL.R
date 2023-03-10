@@ -30,13 +30,14 @@ XBRL <- function() {
   
   fixFileName <- function(dname, file.name) {
     if (!grepl("://",substr(file.name, 1, 10))) {
-      if (substr(file.name, 1, 6) == "../../") { ## A better solution is preferred, but it works for now
-        file.name <- paste0(dirname(dirname(dname)), "/",  substr(file.name, 7, nchar(file.name)))
-      } else if (substr(file.name, 1, 3) == "../") {
-        file.name <- paste0(dirname(dname), "/", substr(file.name, 4, nchar(file.name)))
-      } else {
-        file.name <- paste0(dname,"/", file.name)
+      while(substr(file.name, 1, 3) == "../") {
+        ddname=dirname(dname)
+        lastchar=substr(ddname,nchar(ddname),nchar(ddname))
+        dname=if(lastchar==":") paste0(ddname,"/") else if (ddname==".")  
+          dname else ddname                                              #avoid changing url into a system dir
+        file.name=substr(file.name, 4, nchar(file.name))
       }
+      file.name <- paste0(dname,"/", file.name)
     }
     file.name
   }
