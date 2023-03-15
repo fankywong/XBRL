@@ -103,7 +103,13 @@ XBRL <- function() {
   }
   
   getSchemaName <- function() {
-    fixFileName(dname.inst, .Call("xbrlGetSchemaName", doc.inst, PACKAGE="XBRL"))
+    schemaNames=.Call("xbrlGetSchemaName", doc.inst, PACKAGE="XBRL")
+    if(length(schemaNames)>1) {
+      print("Multiple schema detected, processing the first")
+      print(schemaNames)
+      schemaNames=schemaNames[1]
+    }
+    fixFileName(dname.inst, schemaNames)
   }
   
   processSchema <- function(file, level=1) {
